@@ -41,7 +41,7 @@ describe('platform metadata generation', () => {
       'claude/.claude-plugin/plugin.json',
       'claude/.mcp.json',
       'gemini-extension.json',
-      'opencode/opencode.json',
+      'opencode/opencode.template.json',
       'plugins/maestro/.codex-plugin/plugin.json',
       'plugins/maestro/.mcp.json',
       'qwen-extension.json',

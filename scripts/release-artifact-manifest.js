@@ -65,7 +65,7 @@ const REQUIRED_PACKAGE_FILES = [
   'bin/maestro-mcp-server.js',
   'claude/.claude-plugin/plugin.json',
   'gemini-extension.json',
-  'opencode/opencode.json',
+  'opencode/opencode.template.json',
   'plugins/maestro/.codex-plugin/plugin.json',
   'qwen-extension.json',
   'src/mcp/maestro-server.js',
@@ -277,7 +277,7 @@ function assertRuntimeManifestShape(root, expectedVersion = null) {
   const codexPlugin = readJson(root, 'plugins/maestro/.codex-plugin/plugin.json');
   const claudeMcp = readJson(root, 'claude/.mcp.json');
   const codexMcp = readJson(root, 'plugins/maestro/.mcp.json');
-  const opencodeConfig = readJson(root, 'opencode/opencode.json');
+  const opencodeConfig = readJson(root, 'opencode/opencode.template.json');
 
   const packageName = requireString(pkg.name, 'package.json name');
 
@@ -353,7 +353,7 @@ function assertRuntimeManifestShape(root, expectedVersion = null) {
     !Array.isArray(opencodeServer.command) ||
     !opencodeServer.command.some((part) => String(part).endsWith('/src/mcp/maestro-server.js'))
   ) {
-    throw new Error('opencode/opencode.json must launch the bundled Maestro MCP server');
+    throw new Error('opencode/opencode.template.json must launch the bundled Maestro MCP server');
   }
 
   const requiredRuntimeFiles = [

@@ -94,7 +94,7 @@ maestro-orchestrate/
     ├── skills/                   # opencode skill discovery stubs (7)
     ├── plugins/                  # [hand-written] hook plugin entry (maestro.js)
     ├── src/                      # generated detached runtime payload
-    └── opencode.json             # MCP entry template used by the installer
+    └── opencode.template.json    # MCP entry template used by the installer
 ```
 
 ## Core Concepts

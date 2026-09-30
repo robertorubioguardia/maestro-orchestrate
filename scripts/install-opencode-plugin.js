@@ -10,6 +10,7 @@ const SOURCE_DIR = path.join(ROOT, 'opencode');
 const INSTALL_SUBDIR = 'maestro';
 const MANIFEST_NAME = 'install-manifest.json';
 const CONFIG_FILE = 'opencode.json';
+const TEMPLATE_FILE = 'opencode.template.json';
 const INSTALL_DIR_TOKEN = '__MAESTRO_INSTALL_DIR__';
 const MCP_SERVER_NAME = 'maestro';
 
@@ -142,9 +143,9 @@ function readManifest(configDir) {
 }
 
 function buildMcpEntry(sourceDir, installDir) {
-  const template = JSON.parse(fs.readFileSync(path.join(sourceDir, CONFIG_FILE), 'utf8'));
+  const template = JSON.parse(fs.readFileSync(path.join(sourceDir, TEMPLATE_FILE), 'utf8'));
   const entry = template.mcp && template.mcp[MCP_SERVER_NAME];
-  if (!entry) throw new Error(`${CONFIG_FILE} template has no mcp.${MCP_SERVER_NAME} entry`);
+  if (!entry) throw new Error(`${TEMPLATE_FILE} template has no mcp.${MCP_SERVER_NAME} entry`);
   return JSON.parse(JSON.stringify(entry).split(INSTALL_DIR_TOKEN).join(installDir));
 }
 

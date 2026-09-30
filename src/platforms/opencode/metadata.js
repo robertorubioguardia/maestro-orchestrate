@@ -29,7 +29,7 @@ function buildOpencodeConfigSnippet() {
 function buildMetadataOutputs() {
   return [
     {
-      outputPath: 'opencode/opencode.json',
+      outputPath: 'opencode/opencode.template.json',
       content: renderJson(buildOpencodeConfigSnippet()),
     },
   ];

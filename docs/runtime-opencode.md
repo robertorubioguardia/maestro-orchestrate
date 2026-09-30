@@ -4,10 +4,10 @@ The opencode integration lives in the `opencode/` subdirectory and is installed 
 
 ## Configuration
 
-**Manifest**: none (opencode has no plugin manifest or marketplace); `opencode/opencode.json` is the MCP entry template
+**Manifest**: none (opencode has no plugin manifest or marketplace); `opencode/opencode.template.json` is the MCP entry template
 **Version**: generated from `package.json`
 **Plugin**: `opencode/plugins/maestro.js`
-**MCP Config**: `opencode/opencode.json`
+**MCP Config**: `opencode/opencode.template.json`
 
 ### Install
 
@@ -21,8 +21,6 @@ npx -y -p @josstei/maestro maestro-install-opencode
 # Equivalent
 node scripts/install-opencode-plugin.js [--global | --project | --config-dir <dir>] [--dry-run] [--force] [--uninstall]
 ```
-
-Do not run `opencode` from inside the repo's `opencode/` directory: it would load the raw `opencode.json` template as a project config, whose `__MAESTRO_INSTALL_DIR__` placeholder is only substituted in the installed copy, and `opencode mcp list` would report `maestro` as failed.
 
 The installer:
 
@@ -161,5 +159,5 @@ opencode/
 ├── skills/                7 skill discovery stubs
 ├── plugins/               hand-written plugin entry (maestro.js)
 ├── src/                   generated runtime payload (MCP server, hook logic)
-└── opencode.json          MCP entry template (install dir token replaced by the installer)
+└── opencode.template.json MCP entry template (install dir token replaced by the installer)
 ```

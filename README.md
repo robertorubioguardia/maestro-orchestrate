@@ -127,7 +127,8 @@ Local development:
 ```bash
 git clone https://github.com/josstei/maestro-orchestrate
 cd maestro-orchestrate
-node scripts/install-opencode-plugin.js            # add --dry-run to preview, --uninstall to remove
+./opencode/install-opencode.sh                     # add --dry-run to preview, --uninstall to remove
+# equivalent: node scripts/install-opencode-plugin.js
 ```
 
 Verify with `opencode mcp list` (the `maestro` server should be connected). More details, including the hook mapping and limits, live in [docs/runtime-opencode.md](docs/runtime-opencode.md).
@@ -368,7 +369,8 @@ Desarrollo local:
 ```bash
 git clone https://github.com/josstei/maestro-orchestrate
 cd maestro-orchestrate
-node scripts/install-opencode-plugin.js            # --dry-run para previsualizar, --uninstall para desinstalar
+./opencode/install-opencode.sh                     # --dry-run para previsualizar, --uninstall para desinstalar
+# equivalente: node scripts/install-opencode-plugin.js
 ```
 
 Verifica con `opencode mcp list` (el servidor `maestro` debe aparecer conectado). Más detalles, incluidos el mapeo de hooks y sus límites, en [docs/runtime-opencode.md](docs/runtime-opencode.md).

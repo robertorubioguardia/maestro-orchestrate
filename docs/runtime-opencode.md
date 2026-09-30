@@ -15,9 +15,14 @@ The opencode integration lives in the `opencode/` subdirectory and is installed 
 # Global install into ~/.config/opencode (or $OPENCODE_CONFIG_DIR)
 npx -y -p @josstei/maestro maestro-install-opencode
 
-# From a clone
+# From a clone (shell wrapper around the Node installer; same flags)
+./opencode/install-opencode.sh [--global | --project | --config-dir <dir>] [--dry-run] [--force] [--uninstall]
+
+# Equivalent
 node scripts/install-opencode-plugin.js [--global | --project | --config-dir <dir>] [--dry-run] [--force] [--uninstall]
 ```
+
+Do not run `opencode` from inside the repo's `opencode/` directory: it would load the raw `opencode.json` template as a project config, whose `__MAESTRO_INSTALL_DIR__` placeholder is only substituted in the installed copy, and `opencode mcp list` would report `maestro` as failed.
 
 The installer:
 

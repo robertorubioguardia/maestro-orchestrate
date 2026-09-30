@@ -18,6 +18,7 @@ const DEFAULT_IGNORE_DIRS = new Set([
   'node_modules',
   '.worktrees',
   '.claude',
+  '.opencode',
 ]);
 const DOCS_MAESTRO = path.join('docs', 'maestro');
 

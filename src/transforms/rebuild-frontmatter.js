@@ -49,10 +49,26 @@ const FIELDS = {
       ? [`${ctx.fm.turnsField}: ${ctx.frontmatter.max_turns}`]
       : [],
 
+  mode: (ctx) => (ctx.fm.mode ? [`mode: ${ctx.fm.mode}`] : []),
+
+  permission: (ctx) => {
+    const rules = OPENCODE_PERMISSIONS[ctx.frontmatter.capabilities];
+    if (!rules) return [];
+    return ['permission:', ...Object.entries(rules).map(([k, v]) => `  ${k}: ${v}`)];
+  },
+
   timeout: (ctx) =>
     ctx.fm.hasTimeout && ctx.frontmatter.timeout_mins != null
       ? [`timeout_mins: ${ctx.frontmatter.timeout_mins}`]
       : [],
+};
+
+// opencode agents inherit "allow" for every tool; restrict edit/bash by capability.
+const OPENCODE_PERMISSIONS = {
+  full: null,
+  read_only: { edit: 'deny', bash: 'deny' },
+  read_shell: { edit: 'deny', bash: 'allow' },
+  read_write: { edit: 'allow', bash: 'deny' },
 };
 
 const DEFAULT_FIELD_ORDER = [
@@ -76,6 +92,7 @@ const RUNTIME_FIELD_ORDER = {
     'turns',
     'timeout',
   ],
+  opencode: ['description', 'mode', 'temperature', 'turns', 'permission'],
 };
 
 function resolveTools(frontmatter, runtime) {

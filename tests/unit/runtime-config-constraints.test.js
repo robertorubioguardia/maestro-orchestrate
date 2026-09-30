@@ -7,6 +7,7 @@ const codex = require('../../src/platforms/codex/runtime-config');
 const claude = require('../../src/platforms/claude/runtime-config');
 const gemini = require('../../src/platforms/gemini/runtime-config');
 const qwen = require('../../src/platforms/qwen/runtime-config');
+const opencode = require('../../src/platforms/opencode/runtime-config');
 
 describe('runtime-config delegation.constraints', () => {
   it('codex declares fork incompatibility and deferred result surface', () => {
@@ -33,6 +34,11 @@ describe('runtime-config delegation.constraints', () => {
     assert.ok(qwen.delegation);
     assert.ok(qwen.delegation.constraints);
     assert.equal(typeof qwen.delegation.constraints.result_surface, 'string');
+  });
+
+  it('opencode declares synchronous result surface and interactive children', () => {
+    assert.equal(opencode.delegation.constraints.result_surface, 'synchronous');
+    assert.equal(opencode.delegation.constraints.child_cannot_prompt_user, false);
   });
 
   it('gemini runtime-config does not bind workspacePath to an env var', () => {

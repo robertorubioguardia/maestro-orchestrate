@@ -2,7 +2,7 @@
 
 ## System Design
 
-Maestro follows a **src-first, generated-runtime** architecture. Shared behavior and shared content are authored exactly once under `src/`. Runtime roots (`./`, `claude/`, `plugins/maestro/`, and `qwen/`, plus the repo-root Qwen manifest/context files) contain the manifests, entrypoints, discovery stubs, public adapter files, and any generator-owned runtime payloads each host requires.
+Maestro follows a **src-first, generated-runtime** architecture. Shared behavior and shared content are authored exactly once under `src/`. Runtime roots (`./`, `claude/`, `plugins/maestro/`, `qwen/`, and `opencode/`, plus the repo-root Qwen manifest/context files) contain the manifests, entrypoints, discovery stubs, public adapter files, and any generator-owned runtime payloads each host requires.
 
 ```
                     ┌─────────────┐
@@ -24,6 +24,8 @@ Maestro follows a **src-first, generated-runtime** architecture. Shared behavior
     │             │ │             │ │  maestro/)  │ │             │
     └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘
 ```
+
+A fifth target, opencode (`opencode/`), is generated the same way and is installed into an opencode config directory by `scripts/install-opencode-plugin.js`.
 
 ## Generator Pipeline
 
@@ -74,13 +76,13 @@ The generator exposes 6 transforms (in `src/transforms/`, excluding the `index.j
 
 Each runtime (`src/platforms/*/runtime-config.js`) declares:
 
-| Field | Gemini | Claude | Codex | Qwen |
-|-------|--------|--------|-------|------|
-| `outputDir` | `./` | `claude/` | `plugins/maestro/` | `qwen/` |
-| `agentNaming` | `snake_case` | `kebab-case` | `kebab-case` | `snake_case` |
-| `delegation.pattern` | `{{agent}}(query: "...")` | `Agent(subagent_type: "maestro:{{agent}}", prompt: "...")` | `spawn_agent(...)` | `{{agent}}(query: "...")` |
-| `env.extensionPath` | `extensionPath` | `CLAUDE_PLUGIN_ROOT` | `.` (relative) | `extensionPath` |
-| `env.workspacePath` | `null` (manifest injects `MAESTRO_WORKSPACE_PATH=${workspacePath}`) | `CLAUDE_PROJECT_DIR` | `MAESTRO_WORKSPACE_PATH` | `workspacePath` |
+| Field | Gemini | Claude | Codex | Qwen | opencode |
+|-------|--------|--------|-------|------|----------|
+| `outputDir` | `./` | `claude/` | `plugins/maestro/` | `qwen/` | `opencode/` |
+| `agentNaming` | `snake_case` | `kebab-case` | `kebab-case` | `snake_case` | `kebab-case` |
+| `delegation.pattern` | `{{agent}}(query: "...")` | `Agent(subagent_type: "maestro:{{agent}}", prompt: "...")` | `spawn_agent(...)` | `{{agent}}(query: "...")` | `task(subagent_type: "{{agent}}", prompt: "...")` |
+| `env.extensionPath` | `extensionPath` | `CLAUDE_PLUGIN_ROOT` | `.` (relative) | `extensionPath` | `MAESTRO_EXTENSION_PATH` |
+| `env.workspacePath` | `null` (manifest injects `MAESTRO_WORKSPACE_PATH=${workspacePath}`) | `CLAUDE_PROJECT_DIR` | `MAESTRO_WORKSPACE_PATH` | `workspacePath` | `MAESTRO_WORKSPACE_PATH` (optional; falls back to the MCP server cwd) |
 
 ### Entry-Point Registry
 
@@ -89,6 +91,7 @@ Each runtime (`src/platforms/*/runtime-config.js`) declares:
 - Gemini: TOML commands in `commands/maestro/`
 - Claude: Markdown skills in `claude/skills/`
 - Codex: Markdown skills in `plugins/maestro/skills/*/`, invoked as `$maestro:<skill>`
+- opencode: markdown commands in `opencode/commands/` (`/orchestrate`, `/review-code`, ...), rendered from `opencode-command.md.tmpl` and `opencode-core-command.md.tmpl`
 - Qwen: reuses Gemini's repo-root `commands/maestro/` TOML commands at runtime — `src/generator/entry-point-expander.js` sets `qwen: null` for both entry-point and core-command expansion, so the Qwen generator emits no command files of its own
 
 Entry-points: review, debug, archive, status, security-audit, perf-check, seo-audit, a11y-audit, compliance-check.
@@ -144,6 +147,7 @@ The content tools (`get_agent`, `get_skill_content`) are filesystem-only in ever
 - Claude: `primary=filesystem`, `fallback=none`
 - Codex: `primary=filesystem`, `fallback=none`
 - Qwen: `primary=filesystem`, `fallback=none`
+- opencode: `primary=filesystem`, `fallback=none`
 
 Gemini and Qwen use the shared repo-root entrypoint at `mcp/maestro-server.js`, which requires `../src/mcp/maestro-server` directly. Their generated manifests set `MAESTRO_RUNTIME=gemini` or `MAESTRO_RUNTIME=qwen` before launch. Claude uses dual-resolution: it prefers the repo-level `src/mcp/maestro-server.js` via `fs.existsSync()` and falls back to the bundled detached payload (`claude/src/mcp/maestro-server.js`) when running outside the repo. Codex spawns `bin/maestro-mcp-server.js` via a release-versioned `npx -p @josstei/maestro@<version> maestro-mcp-server` invocation (declared in `plugins/maestro/.mcp.json`); the bin sets `MAESTRO_RUNTIME=codex` and `MAESTRO_EXTENSION_PATH`, then requires `../src/mcp/maestro-server`.
 
@@ -161,6 +165,7 @@ Gemini and Qwen share the repo-root public entrypoint at `mcp/maestro-server.js`
 - **Gemini** (`mcp/maestro-server.js`): launched with `MAESTRO_RUNTIME=gemini`, directly requires `../src/mcp/maestro-server` and calls `.main()`
 - **Qwen** (`mcp/maestro-server.js`): launched with `MAESTRO_RUNTIME=qwen` from `qwen-extension.json`, using the same shared entrypoint as Gemini
 - **Claude** (`claude/mcp/maestro-server.js`): sets `MAESTRO_RUNTIME=claude`, uses `fs.existsSync()` to prefer repo `../../src/mcp/maestro-server.js` with fallback to bundled `../src/mcp/maestro-server.js`
+- **opencode** (`opencode/src/mcp/maestro-server.js`, installed to `<config>/maestro/src/mcp/maestro-server.js`): launched by opencode as a local MCP server with `MAESTRO_RUNTIME=opencode` and `MAESTRO_EXTENSION_PATH=<config>/maestro` from the installer-written `mcp.maestro` entry; tools surface as `maestro_<tool>`
 - **Codex** (`bin/maestro-mcp-server.js` invoked via `npx -y -p @josstei/maestro@<version> maestro-mcp-server` per `plugins/maestro/.mcp.json`): sets `MAESTRO_RUNTIME=codex` and `MAESTRO_EXTENSION_PATH`, then requires `../src/mcp/maestro-server` and calls `.main()`
 
 There is no tracked generated MCP core artifact, no tracked runtime-local `lib/` tree, and no bundled content registry. Public entrypoint stability is preserved without introducing a second hand-maintained source of truth.
@@ -264,6 +269,7 @@ Gemini, Qwen, and Claude block the same destructive commands (`rm -rf`, `git res
 - **Gemini**: TOML policy rules in `policies/maestro.toml`
 - **Qwen**: TOML policy rules in `policies/maestro.toml`
 - **Claude**: JavaScript policy-enforcer hook triggered on Bash tool use
+- **opencode**: the plugin evaluates `src/core/command-policy.js` (shared with the Claude enforcer) in `tool.execute.before` and throws on deny rules; ask rules are not enforced
 
 ### Qwen Hooks
 
@@ -275,6 +281,20 @@ Gemini, Qwen, and Claude block the same destructive commands (`rm -rf`, `git res
 | `SessionEnd` | session-end.js | Clean up hook state |
 
 Qwen uses its own hook registration file at `qwen/hooks.json`, while reusing the repo-root hook runner and logic modules.
+
+### opencode Hooks
+
+opencode has no hook registry, so `opencode/plugins/maestro.js` (hand-written, ESM) loads `src/hooks/opencode-plugin.js`, which runs the same `src/hooks/logic/*` handlers in-process:
+
+| opencode hook | Maestro behavior |
+|---------------|------------------|
+| `event` (`session.created`, `session.deleted`) | session-start / session-end |
+| `tool.execute.before` (`task`) | before-agent: detect agent, append active-session context to the prompt |
+| `tool.execute.after` (`task`) | after-agent: validate handoff report, one retry instruction |
+| `tool.execute.before` (`bash`) | command policy (deny rules throw) |
+| `shell.env` | export `MAESTRO_EXTENSION_PATH` and `MAESTRO_RUNTIME` |
+
+The plugin sets `MAESTRO_QUIET=1` so hook logging stays out of the opencode UI. See [runtime-opencode.md](runtime-opencode.md).
 
 ### Hook State
 
@@ -304,11 +324,11 @@ For detailed documentation of all seven GitHub Actions workflows, the release pi
 
 ### Test Suite
 
-86 test files using Node.js built-in `node:test`:
+90 test files using Node.js built-in `node:test`:
 
-- 53 unit test files (`tests/unit/`)
-- 13 transform test files (`tests/transforms/`)
-- 20 integration test files (`tests/integration/`)
+- 55 unit test files (`tests/unit/`)
+- 14 transform test files (`tests/transforms/`)
+- 21 integration test files (`tests/integration/`)
 
 The justfile's `just test` target uses glob expansion
 (`tests/unit/*.test.js`, `tests/transforms/*.test.js`, `tests/integration/*.test.js`),

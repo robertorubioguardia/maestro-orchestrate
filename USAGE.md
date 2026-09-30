@@ -7,3 +7,4 @@ Runtime-specific references:
 - [docs/runtime-claude.md](docs/runtime-claude.md)
 - [docs/runtime-codex.md](docs/runtime-codex.md)
 - [docs/runtime-qwen.md](docs/runtime-qwen.md)
+- [docs/runtime-opencode.md](docs/runtime-opencode.md)

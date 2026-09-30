@@ -31,6 +31,7 @@
 - [ ] Claude Code
 - [ ] Codex
 - [ ] Qwen Code
+- [ ] opencode
 - [ ] None (internal/build only)
 
 ## Testing Notes

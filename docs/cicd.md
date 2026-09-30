@@ -34,7 +34,7 @@ The six source-of-truth workflows share a common validation core: generate runti
 
 ### Purpose
 
-The foundational CI gate. Enforces that all generated runtime adapters (Gemini CLI, Claude Code, Codex, and Qwen Code) are in sync with canonical source in `src/`, and that the full test suite passes. Runs on every push and pull request targeting `main`.
+The foundational CI gate. Enforces that all generated runtime adapters (Gemini CLI, Claude Code, Codex, Qwen Code, and opencode) are in sync with canonical source in `src/`, and that the full test suite passes. Runs on every push and pull request targeting `main`.
 
 ### Trigger
 
@@ -67,9 +67,12 @@ graph TD
 |------|-------------|
 | Checkout | Pins `actions/checkout` to SHA `11bd71901bbe5b1630ceea73d27597364c9af683` (v4.2.2) |
 | Setup Node.js | Installs Node.js 20 via `actions/setup-node@v4` |
+| Install dependencies | Runs `npm ci` for the lint, SAST, and coverage tooling |
 | Generate runtime adapters | Runs `node scripts/generate.js` to rebuild all runtime outputs |
 | Check adapter drift | Runs `git diff --exit-code --name-only`; fails with annotation if any generated file differs from what is committed |
-| Run full test suite | Executes `node --test tests/unit/*.test.js tests/transforms/*.test.js tests/integration/*.test.js` |
+| Lint, quality, SAST, SCA | Runs `npm run lint`, `npm run quality` (complexity ceiling and layer boundaries), `npm run sast` (eslint-plugin-security), and `npm run sca` (`npm audit --audit-level=high`) |
+| Run full test suite | Executes `npm run coverage` (`c8` over `node --test tests/unit/*.test.js tests/transforms/*.test.js tests/integration/*.test.js`, failing below 80% lines, statements, functions, or branches) |
+| Smoke test | Runs `npm run smoke`: installs the opencode bundle into a scratch directory and drives the installed MCP server over stdio |
 | Verify npm package contents | Runs `npm run pack:verify` to ensure npm dry-run packaging contains required runtime files and no test-only directories |
 | Package and verify release artifact | Runs `npm run release:artifacts` and `npm run release:verify-artifacts` to validate the generic GitHub Release archive |
 

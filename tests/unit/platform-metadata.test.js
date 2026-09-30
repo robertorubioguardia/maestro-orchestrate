@@ -32,6 +32,7 @@ describe('platform metadata generation', () => {
       codex: {},
       gemini: {},
       qwen: {},
+      opencode: {},
     }, PACKAGE_FIXTURE));
 
     const expectedPaths = [
@@ -40,6 +41,7 @@ describe('platform metadata generation', () => {
       'claude/.claude-plugin/plugin.json',
       'claude/.mcp.json',
       'gemini-extension.json',
+      'opencode/opencode.template.json',
       'plugins/maestro/.codex-plugin/plugin.json',
       'plugins/maestro/.mcp.json',
       'qwen-extension.json',

@@ -17,6 +17,9 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install dependencies
+        run: npm ci
+
       - name: Generate runtime adapters
         run: node scripts/generate.js
 
@@ -28,8 +31,23 @@ jobs:
             exit 1
           fi
 
-      - name: Run full test suite
-        run: node --test tests/unit/*.test.js tests/transforms/*.test.js tests/integration/*.test.js
+      - name: Lint
+        run: npm run lint
+
+      - name: Quality (complexity, layer boundaries)
+        run: npm run quality
+
+      - name: SAST
+        run: npm run sast
+
+      - name: SCA
+        run: npm run sca
+
+      - name: Full test suite with coverage threshold
+        run: npm run coverage
+
+      - name: Smoke test
+        run: npm run smoke
 
       - name: Verify npm package contents
         run: npm run pack:verify

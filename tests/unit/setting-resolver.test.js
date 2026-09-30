@@ -8,7 +8,6 @@ const path = require('node:path');
 
 const { resolveSetting } = require('../../src/config/setting-resolver');
 
-const EXTENSION_ENV_VARS = ['MAESTRO_EXTENSION_PATH', 'CLAUDE_PLUGIN_ROOT'];
 
 function withEnv(overrides, fn) {
   const previous = {};

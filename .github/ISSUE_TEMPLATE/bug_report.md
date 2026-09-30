@@ -12,6 +12,7 @@ assignees: ''
 - [ ] Claude Code
 - [ ] Codex
 - [ ] Qwen Code
+- [ ] opencode
 
 ## Maestro Version
 
@@ -21,7 +22,7 @@ assignees: ''
 
 - **OS**: <!-- e.g. macOS 15.2, Ubuntu 24.04 -->
 - **Node.js version**: <!-- e.g. 22.12.0 -->
-- **Runtime version**: <!-- e.g. Gemini CLI 0.1.5, Claude Code 1.0.23, Qwen Code 0.1.5 -->
+- **Runtime version**: <!-- e.g. Gemini CLI 0.1.5, Claude Code 1.0.23, Qwen Code 0.1.5, opencode 1.18 -->
 
 ## Description
 

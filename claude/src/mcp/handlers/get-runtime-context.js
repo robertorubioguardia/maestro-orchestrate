@@ -8,9 +8,10 @@ const MCP_PREFIXES = {
   gemini: 'mcp_maestro_',
   claude: 'mcp__plugin_maestro_maestro__',
   codex: 'mcp__maestro_maestro__',
+  opencode: 'maestro_',
 };
 
-const PLAN_MODE_NATIVE = { claude: true, gemini: true, codex: false, qwen: false };
+const PLAN_MODE_NATIVE = { claude: true, gemini: true, codex: false, qwen: false, opencode: false };
 
 function createHandler(runtimeConfig, getWorkspaceSuggestion = () => null) {
   const resolvedRuntimeConfig = normalizeRuntimeConfig(runtimeConfig);

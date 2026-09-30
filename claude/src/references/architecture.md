@@ -104,6 +104,21 @@ State scripts:
 - `node ./src/scripts/write-state.js <relative-path>` — write state from stdin
 - `node ./src/scripts/read-setting.js <SETTING_NAME>` — resolve a Maestro setting
 <!-- @end-feature -->
+<!-- @feature opencodeStateContract -->
+Maestro maintains session state under `docs/maestro` (resolved from `MAESTRO_STATE_DIR`) in the workspace root:
+
+- **Active session**: `docs/maestro/state/active-session.md`
+- **Plans**: `docs/maestro/plans/`
+- **Archives**: `docs/maestro/state/archive/`, `docs/maestro/plans/archive/`
+
+State scripts (the Maestro plugin exports `MAESTRO_EXTENSION_PATH` into every shell command):
+
+- `node "$MAESTRO_EXTENSION_PATH/src/scripts/ensure-workspace.js" docs/maestro` — initialize workspace directories
+- `node "$MAESTRO_EXTENSION_PATH/src/scripts/read-active-session.js"` — read current session state
+- `node "$MAESTRO_EXTENSION_PATH/src/scripts/read-state.js" <relative-path>` — read arbitrary state file
+- `node "$MAESTRO_EXTENSION_PATH/src/scripts/write-state.js" <relative-path>` — write state from stdin
+- `node "$MAESTRO_EXTENSION_PATH/src/scripts/read-setting.js" <SETTING_NAME>` — resolve a Maestro setting
+<!-- @end-feature -->
 
 ## Session Management
 

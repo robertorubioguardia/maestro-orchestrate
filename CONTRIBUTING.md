@@ -5,7 +5,7 @@ Thank you for your interest in contributing to Maestro. This guide covers everyt
 ## Prerequisites
 
 - **Node.js 20+**
-- **One supported runtime**: [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [Codex](https://github.com/openai/codex), or [Qwen Code](https://github.com/QwenLM/qwen-code)
+- **One supported runtime**: [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [Codex](https://github.com/openai/codex), [Qwen Code](https://github.com/QwenLM/qwen-code), or [opencode](https://opencode.ai)
 - [Just](https://github.com/casey/just) command runner (optional but recommended)
 
 ## Development Setup
@@ -38,6 +38,10 @@ All commands are available via `just` or `npm`:
 | `just test-transforms` | Run only transform unit tests |
 | `just test-integration` | Run only integration tests |
 | `just check` | Generate + verify zero drift (`git diff --exit-code`) |
+| `npm run check` | All quality gates: lint, quality, sast, sca, coverage (>= 80%), regression, smoke (also `just gates`) |
+| `npm run lint` / `quality` / `sast` / `sca` | Individual gates (eslint, complexity + layer boundaries, eslint-plugin-security, `npm audit`) |
+| `npm run coverage` | Full suite under `c8`; fails below 80% lines, statements, functions, or branches |
+| `npm run regression` / `smoke` | Integration suite; install + MCP stdio smoke test |
 | `just ci` | Full CI equivalent: check + check-layers + test |
 | `just dry-run` | Preview changes without writing |
 | `just diff` | Show unified diff of pending changes |
@@ -56,6 +60,7 @@ All hand-maintained code lives in `src/`. Everything outside `src/` at the runti
 | `claude/` | Claude Code |
 | `plugins/maestro/` | Codex |
 | `qwen/` plus root `qwen-extension.json` and `QWEN.md` | Qwen Code |
+| `opencode/` (`opencode/plugins/` is hand-written) | opencode |
 
 The generator pipeline reads `src/manifest.js` and applies transforms from `src/transforms/` to produce runtime-specific output.
 
@@ -166,7 +171,7 @@ This project uses [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) forma
 
 ## Reporting Bugs and Requesting Features
 
-Use the [issue templates](.github/ISSUE_TEMPLATE/) to file bug reports or feature requests. Include your runtime (Gemini CLI, Claude Code, Codex, or Qwen Code), Node.js version, and steps to reproduce.
+Use the [issue templates](.github/ISSUE_TEMPLATE/) to file bug reports or feature requests. Include your runtime (Gemini CLI, Claude Code, Codex, Qwen Code, or opencode), Node.js version, and steps to reproduce.
 
 ## Code Review
 

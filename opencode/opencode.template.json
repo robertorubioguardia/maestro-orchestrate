@@ -1,0 +1,17 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "maestro": {
+      "type": "local",
+      "command": [
+        "node",
+        "__MAESTRO_INSTALL_DIR__/src/mcp/maestro-server.js"
+      ],
+      "environment": {
+        "MAESTRO_RUNTIME": "opencode",
+        "MAESTRO_EXTENSION_PATH": "__MAESTRO_INSTALL_DIR__"
+      },
+      "enabled": true
+    }
+  }
+}

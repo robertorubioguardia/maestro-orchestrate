@@ -76,6 +76,8 @@ All settings are resolved with precedence: environment variable > workspace `.en
 | `MAESTRO_EXTENSION_PATH` | Qwen | Override extension root path |
 | `MAESTRO_WORKSPACE_PATH` | Qwen | Workspace root (set by Qwen Code) |
 | `MAESTRO_WORKSPACE_PATH` | Codex | Optional workspace root override; otherwise Codex uses MCP `roots/list` |
+| `MAESTRO_EXTENSION_PATH` | opencode | Installed payload root (`<config>/maestro`); set by the installer in `mcp.maestro.environment` and exported to shell commands by the plugin |
+| `MAESTRO_WORKSPACE_PATH` | opencode | Optional workspace root override; otherwise the MCP server uses its working directory (the project directory) |
 | `CLAUDE_PLUGIN_ROOT` | Claude | Plugin root (set by Claude Code) |
 | `CLAUDE_PROJECT_DIR` | Claude | Project directory (set by Claude Code) |
 
@@ -139,6 +141,10 @@ Skills are invoked through the plugin namespace:
 | `$maestro:compliance-check` | Compliance review |
 
 Codex keeps its built-in `/review`, `/debug`, and `/resume` commands. Maestro exposes `$maestro:review-code`, `$maestro:debug-workflow`, and `$maestro:resume-session` to avoid colliding with those host commands.
+
+### opencode
+
+Commands are Markdown slash commands installed by `maestro-install-opencode`. The names match Claude Code (`/orchestrate`, `/execute`, `/resume-session`, `/review-code`, `/debug-workflow`, `/archive`, `/status`, `/security-audit`, `/perf-check`, `/seo-audit`, `/a11y-audit`, `/compliance-check`). Maestro MCP tools carry the `maestro_` prefix. See [runtime-opencode.md](runtime-opencode.md).
 
 ## State Directory Structure
 

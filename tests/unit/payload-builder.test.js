@@ -285,7 +285,7 @@ describe('buildDetachedPayload', () => {
     writeFile(srcDir, 'platforms/claude/runtime-config.js', 'config');
     writeFile(srcDir, 'platforms/codex/runtime-config.js', 'other config');
 
-    const stats = buildDetachedPayload(srcDir, outputDir, 'claude');
+    buildDetachedPayload(srcDir, outputDir, 'claude');
 
     assert.ok(fs.existsSync(path.join(outputDir, 'platforms', 'claude', 'runtime-config.js')));
     assert.ok(!fs.existsSync(path.join(outputDir, 'platforms', 'codex', 'runtime-config.js')));

@@ -71,6 +71,8 @@ describe('thin entrypoint design', () => {
       'GEMINI.md',
       'gemini-extension.json',
       'hooks/hooks.json',
+      'opencode/opencode.template.json',
+      'opencode/plugins/maestro.js',
       'qwen-extension.json',
     ];
 

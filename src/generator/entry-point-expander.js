@@ -14,6 +14,7 @@ const DEFAULT_SRC = path.resolve(__dirname, '..');
 const HOST_RESERVED_NAMES = {
   codex: new Set(['review', 'debug', 'resume']),
   claude: new Set(['review', 'debug', 'resume']),
+  opencode: new Set(['review', 'debug', 'resume']),
 };
 
 const ENTRY_POINT_CONFIG = {
@@ -32,6 +33,11 @@ const ENTRY_POINT_CONFIG = {
     outputPath: (e) => `plugins/maestro/skills/${e.name}/SKILL.md`,
     preamblePlaceholder: 'refs_list',
   },
+  opencode: {
+    templateFile: 'opencode-command.md.tmpl',
+    outputPath: (e) => `opencode/commands/${e.name}.md`,
+    preamblePlaceholder: 'protocol_block',
+  },
   qwen: null,
 };
 
@@ -47,6 +53,10 @@ const CORE_COMMAND_CONFIG = {
   codex: {
     templateFile: 'codex-core-command.md.tmpl',
     outputPath: (e) => `plugins/maestro/skills/${e.name}/SKILL.md`,
+  },
+  opencode: {
+    templateFile: 'opencode-core-command.md.tmpl',
+    outputPath: (e) => `opencode/commands/${e.name}.md`,
   },
   qwen: null,
 };

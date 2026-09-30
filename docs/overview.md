@@ -6,6 +6,7 @@ Maestro is a multi-agent development orchestration platform that coordinates 39 
 - **Claude Code plugin** (`claude/` subdirectory)
 - **Codex plugin** (`plugins/maestro/` subdirectory)
 - **Qwen Code extension** (`qwen/` subdirectory — `qwen-extension.json` manifest + `QWEN.md` context file live at repo root; generated `qwen/agents/` and `qwen/hooks.json` live in the subdirectory)
+- **opencode integration** (`opencode/` subdirectory — generated agents, commands, skills, and payload plus a hand-written `plugins/maestro.js`; installed with `scripts/install-opencode-plugin.js`)
 
 The orchestrator adopts a TechLead persona that designs, plans, delegates to agents, validates, and reports.
 
@@ -57,7 +58,7 @@ maestro-orchestrate/
 │   └── manifest.js               # Declarative file mapping rules
 ├── scripts/
 │   └── generate.js               # Generator (manifest → output)
-├── tests/                        # 86 test files across unit, transforms, and integration
+├── tests/                        # 90 test files across unit, transforms, and integration
 │
 ├── agents/                       # [generated] Gemini agent stubs
 ├── commands/maestro/             # [generated] Gemini TOML commands
@@ -83,9 +84,17 @@ maestro-orchestrate/
 │   ├── .app.json                 # App config
 │   └── README.md
 │
-└── qwen/                         # [generated] Qwen Code extension
-    ├── agents/                   # Qwen agent stubs (39, snake_case, Qwen tool names)
-    └── hooks.json                # Qwen hook registration
+├── qwen/                         # [generated] Qwen Code extension
+│   ├── agents/                   # Qwen agent stubs (39, snake_case, Qwen tool names)
+│   └── hooks.json                # Qwen hook registration
+│
+└── opencode/                     # [generated, except plugins/] opencode integration
+    ├── agents/                   # opencode agent stubs (39, kebab-case)
+    ├── commands/                 # opencode markdown commands (12)
+    ├── skills/                   # opencode skill discovery stubs (7)
+    ├── plugins/                  # [hand-written] hook plugin entry (maestro.js)
+    ├── src/                      # generated detached runtime payload
+    └── opencode.template.json    # MCP entry template used by the installer
 ```
 
 ## Core Concepts

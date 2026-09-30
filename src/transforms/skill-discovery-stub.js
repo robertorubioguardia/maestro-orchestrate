@@ -18,7 +18,8 @@ function skillDiscoveryStub(content, runtime) {
 
   lines.push('---');
   lines.push('');
-  lines.push(`Methodology loaded via MCP. Call \`get_skill_content(resources: ["${name}"])\`.`);
+  const tool = runtime.name === 'opencode' ? 'maestro_get_skill_content' : 'get_skill_content';
+  lines.push(`Methodology loaded via MCP. Call \`${tool}(resources: ["${name}"])\`.`);
   lines.push('');
 
   return lines.join('\n');

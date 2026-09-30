@@ -2,7 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
-const { pathToFileURL, fileURLToPath } = require('node:url');
+const { fileURLToPath } = require('node:url');
 
 const { isExtensionCachePath } = require('../contracts/cache-path-rejector');
 

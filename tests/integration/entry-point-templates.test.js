@@ -52,6 +52,30 @@ describe('expandEntryPoints', () => {
     assert.ok(resume.content.includes('get_skill_content'));
   });
 
+  it('produces opencode commands with $ARGUMENTS and non-conflicting names', () => {
+    const results = expandEntryPoints('opencode');
+    assert.ok(results.length >= 9);
+    const review = results.find((r) => r.outputPath === 'opencode/commands/review-code.md');
+    assert.ok(review);
+    assert.ok(!results.some((r) => r.outputPath === 'opencode/commands/review.md'));
+    assert.ok(!results.some((r) => r.outputPath === 'opencode/commands/debug.md'));
+    assert.ok(review.content.startsWith('---\ndescription: '));
+    assert.ok(review.content.includes('$ARGUMENTS'));
+    assert.ok(review.content.includes('maestro_get_skill_content'));
+    assert.ok(!review.content.includes('{{'));
+  });
+
+  it('produces opencode core commands with a non-conflicting resume name', () => {
+    const results = expandCoreCommands('opencode');
+    assert.equal(results.length, 3);
+    const resume = results.find((r) => r.outputPath === 'opencode/commands/resume-session.md');
+    assert.ok(resume);
+    assert.ok(!results.some((r) => r.outputPath === 'opencode/commands/resume.md'));
+    assert.ok(resume.content.includes('$ARGUMENTS'));
+    assert.ok(resume.content.includes('maestro_get_runtime_context'));
+    assert.ok(!resume.content.includes('{{'));
+  });
+
   it('gemini skills_block activates correct skills', () => {
     const results = expandEntryPoints('gemini');
     const review = results.find((r) => r.outputPath.includes('review'));

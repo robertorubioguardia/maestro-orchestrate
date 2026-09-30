@@ -20,10 +20,12 @@ const RELEASE_ARTIFACT_PATHS = [
   'docs/runtime-claude.md',
   'docs/runtime-codex.md',
   'docs/runtime-qwen.md',
+  'docs/runtime-opencode.md',
   'docs/usage.md',
   'gemini-extension.json',
   'hooks',
   'mcp',
+  'opencode',
   'package-lock.json',
   'package.json',
   'plugins/maestro',
@@ -63,6 +65,7 @@ const REQUIRED_PACKAGE_FILES = [
   'bin/maestro-mcp-server.js',
   'claude/.claude-plugin/plugin.json',
   'gemini-extension.json',
+  'opencode/opencode.json',
   'plugins/maestro/.codex-plugin/plugin.json',
   'qwen-extension.json',
   'src/mcp/maestro-server.js',
@@ -229,6 +232,7 @@ function getVersionEntries(root) {
   const claudeMarketplace = readJson(root, '.claude-plugin/marketplace.json');
   const claudeSrcVersion = readJson(root, 'claude/src/version.json');
   const codexSrcVersion = readJson(root, 'plugins/maestro/src/version.json');
+  const opencodeSrcVersion = readJson(root, 'opencode/src/version.json');
   const claudeMarketplacePlugin = findNamedPlugin(
     claudeMarketplace,
     'maestro',
@@ -245,6 +249,7 @@ function getVersionEntries(root) {
     ['.claude-plugin/marketplace.json plugins.maestro.version', requireVersion(claudeMarketplacePlugin.version, 'Claude marketplace plugin')],
     ['claude/src/version.json', requireVersion(claudeSrcVersion.version, 'Claude detached payload')],
     ['plugins/maestro/src/version.json', requireVersion(codexSrcVersion.version, 'Codex detached payload')],
+    ['opencode/src/version.json', requireVersion(opencodeSrcVersion.version, 'opencode detached payload')],
   ];
 }
 
@@ -272,6 +277,7 @@ function assertRuntimeManifestShape(root, expectedVersion = null) {
   const codexPlugin = readJson(root, 'plugins/maestro/.codex-plugin/plugin.json');
   const claudeMcp = readJson(root, 'claude/.mcp.json');
   const codexMcp = readJson(root, 'plugins/maestro/.mcp.json');
+  const opencodeConfig = readJson(root, 'opencode/opencode.json');
 
   const packageName = requireString(pkg.name, 'package.json name');
 
@@ -340,10 +346,23 @@ function assertRuntimeManifestShape(root, expectedVersion = null) {
     throw new Error(`plugins/maestro/.mcp.json must launch ${expectedPackageSpec}`);
   }
 
+  const opencodeServer = opencodeConfig.mcp && opencodeConfig.mcp.maestro;
+  if (
+    !opencodeServer ||
+    opencodeServer.type !== 'local' ||
+    !Array.isArray(opencodeServer.command) ||
+    !opencodeServer.command.some((part) => String(part).endsWith('/src/mcp/maestro-server.js'))
+  ) {
+    throw new Error('opencode/opencode.json must launch the bundled Maestro MCP server');
+  }
+
   const requiredRuntimeFiles = [
     'bin/maestro-mcp-server.js',
     'claude/src/mcp/maestro-server.js',
     'plugins/maestro/src/mcp/maestro-server.js',
+    'opencode/src/mcp/maestro-server.js',
+    'opencode/src/hooks/opencode-plugin.js',
+    'opencode/plugins/maestro.js',
   ];
 
   for (const relativePath of requiredRuntimeFiles) {

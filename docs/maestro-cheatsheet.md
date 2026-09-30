@@ -10,23 +10,24 @@ This document summarizes the minimum commands and concepts for using Maestro acr
 | Claude Code | `claude plugin marketplace add josstei/maestro-orchestrate` + `claude plugin install maestro@maestro-orchestrator --scope user` | `/orchestrate`, `/review-code`, `/status`, ... |
 | Codex CLI | `codex plugin marketplace add josstei/maestro-orchestrate`, then install Maestro inside Codex via `/plugins` | `$maestro:*` |
 | Qwen Code | `qwen extensions install https://github.com/josstei/maestro-orchestrate` | `/maestro:*` |
+| opencode | `npx -y -p @josstei/maestro maestro-install-opencode` (or `node scripts/install-opencode-plugin.js` from a clone) | `/orchestrate`, `/review-code`, `/status`, ... |
 
 ## 2. Most Common Commands
 
-| Capability | Gemini CLI | Claude Code | Codex CLI | Qwen Code |
-|---|---|---|---|---|
-| Start the full workflow | `/maestro:orchestrate <task>` | `/orchestrate <task>` | `$maestro:orchestrate <task>` | `/maestro:orchestrate <task>` |
-| Run an existing plan | `/maestro:execute` | `/execute` | `$maestro:execute` | `/maestro:execute` |
-| Check status | `/maestro:status` | `/status` | `$maestro:status` | `/maestro:status` |
-| Resume a session | `/maestro:resume` | `/resume-session` | `$maestro:resume-session` | `/maestro:resume` |
-| Archive | `/maestro:archive` | `/archive` | `$maestro:archive` | `/maestro:archive` |
-| Code review | `/maestro:review` | `/review-code` | `$maestro:review-code` | `/maestro:review` |
-| Debug | `/maestro:debug` | `/debug-workflow` | `$maestro:debug-workflow` | `/maestro:debug` |
-| Security audit | `/maestro:security-audit` | `/security-audit` | `$maestro:security-audit` | `/maestro:security-audit` |
-| Perf check | `/maestro:perf-check` | `/perf-check` | `$maestro:perf-check` | `/maestro:perf-check` |
-| SEO audit | `/maestro:seo-audit` | `/seo-audit` | `$maestro:seo-audit` | `/maestro:seo-audit` |
-| A11y audit | `/maestro:a11y-audit` | `/a11y-audit` | `$maestro:a11y-audit` | `/maestro:a11y-audit` |
-| Compliance check | `/maestro:compliance-check` | `/compliance-check` | `$maestro:compliance-check` | `/maestro:compliance-check` |
+| Capability | Gemini CLI | Claude Code | Codex CLI | Qwen Code | opencode |
+|---|---|---|---|---|----------|
+| Start the full workflow | `/maestro:orchestrate <task>` | `/orchestrate <task>` | `$maestro:orchestrate <task>` | `/maestro:orchestrate <task>` | `/orchestrate <task>` |
+| Run an existing plan | `/maestro:execute` | `/execute` | `$maestro:execute` | `/maestro:execute` | `/execute` |
+| Check status | `/maestro:status` | `/status` | `$maestro:status` | `/maestro:status` | `/status` |
+| Resume a session | `/maestro:resume` | `/resume-session` | `$maestro:resume-session` | `/maestro:resume` | `/resume-session` |
+| Archive | `/maestro:archive` | `/archive` | `$maestro:archive` | `/maestro:archive` | `/archive` |
+| Code review | `/maestro:review` | `/review-code` | `$maestro:review-code` | `/maestro:review` | `/review-code` |
+| Debug | `/maestro:debug` | `/debug-workflow` | `$maestro:debug-workflow` | `/maestro:debug` | `/debug-workflow` |
+| Security audit | `/maestro:security-audit` | `/security-audit` | `$maestro:security-audit` | `/maestro:security-audit` | `/security-audit` |
+| Perf check | `/maestro:perf-check` | `/perf-check` | `$maestro:perf-check` | `/maestro:perf-check` | `/perf-check` |
+| SEO audit | `/maestro:seo-audit` | `/seo-audit` | `$maestro:seo-audit` | `/maestro:seo-audit` | `/seo-audit` |
+| A11y audit | `/maestro:a11y-audit` | `/a11y-audit` | `$maestro:a11y-audit` | `/maestro:a11y-audit` | `/a11y-audit` |
+| Compliance check | `/maestro:compliance-check` | `/compliance-check` | `$maestro:compliance-check` | `/maestro:compliance-check` | `/compliance-check` |
 
 ## 3. Minimal Usage Examples
 
@@ -144,6 +145,12 @@ Common paths:
 - Same command surface as Gemini CLI
 - Uses `qwen/agents/` and `qwen/hooks.json`; commands, policies, MCP, and hook runner are shared from the repository root
 
+### opencode
+
+- Command entry point: `/orchestrate`, `/review-code`, `/debug-workflow`, `/resume-session`, ...
+- Installed by `maestro-install-opencode` into `~/.config/opencode/` (or `.opencode/` with `--project`); verify with `opencode mcp list`
+- MCP tools are prefixed `maestro_` (for example `maestro_create_session`); subagents are dispatched with the `task` tool
+
 ## 7. Hook Reference
 
 ### Gemini CLI
@@ -170,6 +177,11 @@ Common paths:
 - `SubagentStart`
 - `SubagentStop`
 - `SessionEnd`
+
+### opencode
+
+- In-process plugin (`plugins/maestro.js`): `session.created`/`session.deleted` events, `tool.execute.before`/`after` on `task` and `bash`, `shell.env`
+- Deny rules block via a thrown error; ask rules (`tee`, redirects) are not enforced
 
 ## 8. Common Notes
 

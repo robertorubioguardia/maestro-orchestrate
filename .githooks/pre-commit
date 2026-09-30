@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# pre-commit: enforce semantic branch names before commits are created.
+# pre-commit: enforce semantic branch names and lint before commits are created.
 
 set -euo pipefail
 
@@ -11,11 +11,18 @@ source "$HOOK_DIR/lib/semantic-git.sh"
 branch="$(git symbolic-ref --quiet --short HEAD || true)"
 
 # Detached HEADs are common during bisects, rebases, CI, and release tooling.
-[ -n "$branch" ] || exit 0
-
-if semantic_branch_name_is_valid "$branch"; then
-  exit 0
+if [ -n "$branch" ] && ! semantic_branch_name_is_valid "$branch"; then
+  semantic_print_branch_name_error "pre-commit" "$branch"
+  exit 1
 fi
 
-semantic_print_branch_name_error "pre-commit" "$branch"
-exit 1
+# Best-effort lint gate: only when dev dependencies are installed (CI re-validates everything).
+repo_root="$(git rev-parse --show-toplevel)"
+if [ -x "$repo_root/node_modules/.bin/eslint" ]; then
+  (cd "$repo_root" && npm run --silent lint) || {
+    echo "pre-commit: lint failed. Fix the findings above (npm run lint) and retry." >&2
+    exit 1
+  }
+fi
+
+exit 0

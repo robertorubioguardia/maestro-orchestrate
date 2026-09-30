@@ -26,6 +26,14 @@ function buildClaudePreamble(entry) {
   return '## Protocol\n\nBefore delegating, call `get_skill_content` with resources: ["delegation"] and follow the returned methodology.\n';
 }
 
+function buildOpencodePreamble(entry) {
+  if (!entry.agents || entry.agents.length === 0) {
+    return '';
+  }
+
+  return '## Protocol\n\nBefore delegating, call `maestro_get_skill_content` with resources: ["delegation"] and follow the returned methodology.\n';
+}
+
 function buildCodexPreamble(entry) {
   const refs = [];
   const resources = [];
@@ -51,4 +59,5 @@ module.exports = {
   gemini: buildGeminiPreamble,
   claude: buildClaudePreamble,
   codex: buildCodexPreamble,
+  opencode: buildOpencodePreamble,
 };

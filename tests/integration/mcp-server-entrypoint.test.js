@@ -1,13 +1,15 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
 const { spawn } = require('node:child_process');
+const path = require('node:path');
 
 const { ROOT, withIsolatedClaudePlugin } = require('./helpers');
 
-function waitForServerStartup(relativePath, cwd = ROOT) {
+function waitForServerStartup(relativePath, cwd = ROOT, env = {}) {
   return new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [relativePath], {
       cwd,
+      env: { ...process.env, ...env },
       stdio: ['pipe', 'pipe', 'pipe'],
     });
 
@@ -100,6 +102,16 @@ describe('mcp server entrypoint startup', () => {
     const result = await withIsolatedClaudePlugin((pluginRoot) =>
       waitForServerStartup('mcp/maestro-server.js', pluginRoot)
     );
+
+    assert.match(result.stderr, /\[info\] maestro: MCP server starting/);
+    assert.match(result.stderr, /\[info\] maestro: MCP server connected/);
+  });
+
+  it('starts the opencode runtime server from its bundled payload', async () => {
+    const result = await waitForServerStartup('opencode/src/mcp/maestro-server.js', ROOT, {
+      MAESTRO_RUNTIME: 'opencode',
+      MAESTRO_EXTENSION_PATH: path.join(ROOT, 'opencode'),
+    });
 
     assert.match(result.stderr, /\[info\] maestro: MCP server starting/);
     assert.match(result.stderr, /\[info\] maestro: MCP server connected/);

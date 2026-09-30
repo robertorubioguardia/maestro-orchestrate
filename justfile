@@ -15,6 +15,9 @@ help:
     @echo "  just test-transforms  Run only transform unit tests"
     @echo "  just test-integration Run only integration tests"
     @echo ""
+    @echo "Quality gates:"
+    @echo "  just gates            Run every quality gate (npm run check)"
+    @echo ""
     @echo "CI:"
     @echo "  just check            Generate + verify zero drift"
     @echo "  just ci               Full CI equivalent (check + test)"
@@ -91,6 +94,10 @@ check-layers:
 
 # Generate, test, and verify — full CI equivalent
 ci: check check-layers test
+
+# Run every quality gate: lint, quality, sast, sca, coverage, regression, smoke
+gates:
+    npm run check
 
 # Delete local branches whose remote tracking ref is gone
 cleanup-branches:

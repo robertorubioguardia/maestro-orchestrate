@@ -191,12 +191,13 @@ test('doc-drift: docs/usage.md MCP Quick Reference includes all 10 session tools
   }
 });
 
-test('doc-drift: runtime docs reference only the 4 canonical feature flags', () => {
+test('doc-drift: runtime docs reference only the 5 canonical feature flags', () => {
   const canonical = [
     'exampleBlocks',
     'claudeStateContract',
     'scriptBasedStateContract',
     'codexStateContract',
+    'opencodeStateContract',
   ];
   const removed = [
     'mcpSkillContentHandler',
@@ -216,7 +217,7 @@ test('doc-drift: runtime docs reference only the 4 canonical feature flags', () 
     'qwenStateContract',
     'qwenRuntimeConfig',
   ];
-  for (const runtime of ['gemini', 'claude', 'codex', 'qwen']) {
+  for (const runtime of ['gemini', 'claude', 'codex', 'qwen', 'opencode']) {
     const body = read(`docs/runtime-${runtime}.md`);
     const flagsMatch = body.match(/## Feature Flags[\s\S]*?(?=\n## |\n# |$)/);
     assert.ok(flagsMatch, `docs/runtime-${runtime}.md: missing Feature Flags section`);
@@ -232,10 +233,11 @@ test('doc-drift: runtime docs reference only the 4 canonical feature flags', () 
 
 test('doc-drift: runtime-docs feature-flag booleans match src/platforms/*/runtime-config.js', () => {
   const expected = {
-    gemini: { exampleBlocks: false, claudeStateContract: false, scriptBasedStateContract: true, codexStateContract: false },
-    claude: { exampleBlocks: true, claudeStateContract: true, scriptBasedStateContract: false, codexStateContract: false },
-    codex: { exampleBlocks: false, claudeStateContract: false, scriptBasedStateContract: false, codexStateContract: true },
-    qwen: { exampleBlocks: false, claudeStateContract: false, scriptBasedStateContract: true, codexStateContract: false },
+    gemini: { exampleBlocks: false, claudeStateContract: false, scriptBasedStateContract: true, codexStateContract: false, opencodeStateContract: false },
+    claude: { exampleBlocks: true, claudeStateContract: true, scriptBasedStateContract: false, codexStateContract: false, opencodeStateContract: false },
+    codex: { exampleBlocks: false, claudeStateContract: false, scriptBasedStateContract: false, codexStateContract: true, opencodeStateContract: false },
+    qwen: { exampleBlocks: false, claudeStateContract: false, scriptBasedStateContract: true, codexStateContract: false, opencodeStateContract: false },
+    opencode: { exampleBlocks: false, claudeStateContract: false, scriptBasedStateContract: false, codexStateContract: false, opencodeStateContract: true },
   };
   for (const [runtime, flags] of Object.entries(expected)) {
     const body = read(`docs/runtime-${runtime}.md`);
@@ -248,7 +250,7 @@ test('doc-drift: runtime-docs feature-flag booleans match src/platforms/*/runtim
 });
 
 test('doc-drift: runtime docs use generated-version placeholders', () => {
-  for (const runtime of ['gemini', 'claude', 'codex', 'qwen']) {
+  for (const runtime of ['gemini', 'claude', 'codex', 'qwen', 'opencode']) {
     const surface = `docs/runtime-${runtime}.md`;
     const body = read(surface);
     assert.ok(

@@ -65,11 +65,19 @@ function parseArgs(argv) {
   return options;
 }
 
+function isReleaseVersion(version) {
+  if (typeof version !== 'string') return false;
+  const dash = version.indexOf('-');
+  const core = dash === -1 ? version : version.slice(0, dash);
+  const prerelease = dash === -1 ? null : version.slice(dash + 1);
+  return /^\d+\.\d+\.\d+$/.test(core) && (prerelease === null || /^[0-9A-Za-z.-]+$/.test(prerelease));
+}
+
 function resolveVersion(root, requestedVersion) {
   const packageVersion = readJson(root, 'package.json').version;
   const version = requestedVersion || packageVersion;
 
-  if (typeof version !== 'string' || !/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version)) {
+  if (!isReleaseVersion(version)) {
     throw new Error(`Invalid release artifact version: ${version}`);
   }
 

@@ -1,6 +1,6 @@
 # Maestro Examples
 
-This guide is a scenario catalog for Maestro public entry points across Gemini CLI, Claude Code, Codex, and Qwen Code. Use the command form for the runtime you are running.
+This guide is a scenario catalog for Maestro public entry points across Gemini CLI, Claude Code, Codex, Qwen Code, and opencode. Use the command form for the runtime you are running.
 
 Canonical sources for this page:
 
@@ -12,22 +12,22 @@ Canonical sources for this page:
 
 ## Runtime Command Forms
 
-| Capability | Gemini CLI | Claude Code | Codex | Qwen Code |
-|------------|------------|-------------|-------|-----------|
-| Full orchestration | `/maestro:orchestrate` | `/orchestrate` | `$maestro:orchestrate` | `/maestro:orchestrate` |
-| Execute plan | `/maestro:execute` | `/execute` | `$maestro:execute` | `/maestro:execute` |
-| Session status | `/maestro:status` | `/status` | `$maestro:status` | `/maestro:status` |
-| Resume session | `/maestro:resume` | `/resume-session` | `$maestro:resume-session` | `/maestro:resume` |
-| Archive session | `/maestro:archive` | `/archive` | `$maestro:archive` | `/maestro:archive` |
-| Code review | `/maestro:review` | `/review-code` | `$maestro:review-code` | `/maestro:review` |
-| Debug workflow | `/maestro:debug` | `/debug-workflow` | `$maestro:debug-workflow` | `/maestro:debug` |
-| Security audit | `/maestro:security-audit` | `/security-audit` | `$maestro:security-audit` | `/maestro:security-audit` |
-| Performance check | `/maestro:perf-check` | `/perf-check` | `$maestro:perf-check` | `/maestro:perf-check` |
-| Accessibility audit | `/maestro:a11y-audit` | `/a11y-audit` | `$maestro:a11y-audit` | `/maestro:a11y-audit` |
-| SEO audit | `/maestro:seo-audit` | `/seo-audit` | `$maestro:seo-audit` | `/maestro:seo-audit` |
-| Compliance check | `/maestro:compliance-check` | `/compliance-check` | `$maestro:compliance-check` | `/maestro:compliance-check` |
+| Capability | Gemini CLI | Claude Code | Codex | Qwen Code | opencode |
+|------------|------------|-------------|-------|-----------|----------|
+| Full orchestration | `/maestro:orchestrate` | `/orchestrate` | `$maestro:orchestrate` | `/maestro:orchestrate` | `/orchestrate` |
+| Execute plan | `/maestro:execute` | `/execute` | `$maestro:execute` | `/maestro:execute` | `/execute` |
+| Session status | `/maestro:status` | `/status` | `$maestro:status` | `/maestro:status` | `/status` |
+| Resume session | `/maestro:resume` | `/resume-session` | `$maestro:resume-session` | `/maestro:resume` | `/resume-session` |
+| Archive session | `/maestro:archive` | `/archive` | `$maestro:archive` | `/maestro:archive` | `/archive` |
+| Code review | `/maestro:review` | `/review-code` | `$maestro:review-code` | `/maestro:review` | `/review-code` |
+| Debug workflow | `/maestro:debug` | `/debug-workflow` | `$maestro:debug-workflow` | `/maestro:debug` | `/debug-workflow` |
+| Security audit | `/maestro:security-audit` | `/security-audit` | `$maestro:security-audit` | `/maestro:security-audit` | `/security-audit` |
+| Performance check | `/maestro:perf-check` | `/perf-check` | `$maestro:perf-check` | `/maestro:perf-check` | `/perf-check` |
+| Accessibility audit | `/maestro:a11y-audit` | `/a11y-audit` | `$maestro:a11y-audit` | `/maestro:a11y-audit` | `/a11y-audit` |
+| SEO audit | `/maestro:seo-audit` | `/seo-audit` | `$maestro:seo-audit` | `/maestro:seo-audit` | `/seo-audit` |
+| Compliance check | `/maestro:compliance-check` | `/compliance-check` | `$maestro:compliance-check` | `/maestro:compliance-check` | `/compliance-check` |
 
-Claude Code and Codex reserve `/review`, `/debug`, and `/resume` for host behavior. Maestro remaps those public entry points to `review-code`, `debug-workflow`, and `resume-session` in those runtimes.
+Claude Code, Codex, and opencode use `review-code`, `debug-workflow`, and `resume-session` instead of `/review`, `/debug`, and `/resume` (Claude Code and Codex reserve those names for host behavior; opencode keeps them free for parity). See `src/generator/entry-point-expander.js` `HOST_RESERVED_NAMES`.
 
 ## Full Feature Orchestration
 
@@ -39,6 +39,7 @@ Use this when the task needs design, planning, specialist execution, and final r
 | Claude Code | `/orchestrate Build a REST API for a task management system with user authentication` |
 | Codex | `$maestro:orchestrate Build a REST API for a task management system with user authentication` |
 | Qwen Code | `/maestro:orchestrate Build a REST API for a task management system with user authentication` |
+| opencode | `/orchestrate Build a REST API for a task management system with user authentication` |
 
 Expected outcome: Maestro classifies the task, routes simple work to Express or medium/complex work to the Standard workflow, produces an approved implementation plan for Standard work, delegates execution to specialists, runs the completion review gate, and archives when `MAESTRO_AUTO_ARCHIVE` is true or unset.
 
@@ -54,6 +55,7 @@ Use this when an approved implementation plan already exists and you want Maestr
 | Claude Code | `/execute docs/maestro/plans/2024-03-15-auth-system-impl-plan.md` |
 | Codex | `$maestro:execute docs/maestro/plans/2024-03-15-auth-system-impl-plan.md` |
 | Qwen Code | `/maestro:execute docs/maestro/plans/2024-03-15-auth-system-impl-plan.md` |
+| opencode | `/execute docs/maestro/plans/2024-03-15-auth-system-impl-plan.md` |
 
 Expected outcome: Maestro reads the approved plan, resolves the execution mode gate, creates or resumes session state, then executes phases through child agents following the loaded methodology.
 
@@ -69,6 +71,7 @@ Use this to inspect the active session without mutating state.
 | Claude Code | `/status` |
 | Codex | `$maestro:status` |
 | Qwen Code | `/maestro:status` |
+| opencode | `/status` |
 
 Expected outcome: Maestro reports the session ID, creation timestamp, workflow mode, overall status, phase breakdown, file manifest, token usage by agent, and unresolved errors.
 
@@ -84,6 +87,7 @@ Use this after a prior orchestration was paused, interrupted, or left with pendi
 | Claude Code | `/resume-session Continue from the first pending or failed phase` |
 | Codex | `$maestro:resume-session Continue from the first pending or failed phase` |
 | Qwen Code | `/maestro:resume Continue from the first pending or failed phase` |
+| opencode | `/resume-session Continue from the first pending or failed phase` |
 
 Expected outcome: Maestro reads the active session state, summarizes completed and pending phases, then resumes from the first pending or failed phase following the loaded methodology.
 
@@ -99,6 +103,7 @@ Use this when the active session should be moved out of the active state directo
 | Claude Code | `/archive` |
 | Codex | `$maestro:archive` |
 | Qwen Code | `/maestro:archive` |
+| opencode | `/archive` |
 
 Expected outcome: Maestro summarizes the active session, asks the user to confirm archival, moves the active session and associated plan files into archive directories, and verifies that no active session remains.
 
@@ -114,6 +119,7 @@ Use this when you want findings ordered by severity without running the full orc
 | Claude Code | `/review-code Review the staged changes for correctness, regressions, security, maintainability risk, and missing tests` |
 | Codex | `$maestro:review-code Review the staged changes for correctness, regressions, security, maintainability risk, and missing tests` |
 | Qwen Code | `/maestro:review Review the staged changes for correctness, regressions, security, maintainability risk, and missing tests` |
+| opencode | `/review-code Review the staged changes for correctness, regressions, security, maintainability risk, and missing tests` |
 
 Expected outcome: Maestro delegates to the code-reviewer agent, classifies findings by Critical, Major, Minor, and Suggestion, and presents findings first with concrete file and line references.
 
@@ -129,6 +135,7 @@ Use this for investigation-heavy work where the root cause is not yet known.
 | Claude Code | `/debug-workflow Investigate the failing behavior, repro path, and expected behavior` |
 | Codex | `$maestro:debug-workflow Investigate the failing behavior, repro path, and expected behavior` |
 | Qwen Code | `/maestro:debug Investigate the failing behavior, repro path, and expected behavior` |
+| opencode | `/debug-workflow Investigate the failing behavior, repro path, and expected behavior` |
 
 Expected outcome: Maestro establishes the failing behavior, forms hypotheses, gathers evidence from code, logs, tests, and runtime behavior, then returns root cause, affected files, confidence level, and the smallest defensible next action.
 
@@ -144,6 +151,7 @@ Use this for authentication, authorization, secret handling, dependency, and dat
 | Claude Code | `/security-audit Audit authentication, authorization, data exposure, secret handling, and exploitability risks` |
 | Codex | `$maestro:security-audit Audit authentication, authorization, data exposure, secret handling, and exploitability risks` |
 | Qwen Code | `/maestro:security-audit Audit authentication, authorization, data exposure, secret handling, and exploitability risks` |
+| opencode | `/security-audit Audit authentication, authorization, data exposure, secret handling, and exploitability risks` |
 
 Expected outcome: Maestro reviews trust boundaries, auth flows, secret handling, and data exposure paths, then reports severity-classified findings with file references and exploitability assessment.
 
@@ -159,6 +167,7 @@ Use this when a feature or code path has latency, throughput, memory, or scaling
 | Claude Code | `/perf-check Assess hotspots, regressions, and optimization opportunities in the requested code path` |
 | Codex | `$maestro:perf-check Assess hotspots, regressions, and optimization opportunities in the requested code path` |
 | Qwen Code | `/maestro:perf-check Assess hotspots, regressions, and optimization opportunities in the requested code path` |
+| opencode | `/perf-check Assess hotspots, regressions, and optimization opportunities in the requested code path` |
 
 Expected outcome: Maestro establishes the available baseline, identifies likely hotspots, prioritizes fixes by expected impact versus implementation cost, and reports measurement gaps when hard evidence is unavailable.
 
@@ -174,6 +183,7 @@ Use this for WCAG, ARIA, keyboard navigation, focus management, and screen reade
 | Claude Code | `/a11y-audit Audit WCAG compliance, ARIA usage, keyboard navigation, and screen reader compatibility` |
 | Codex | `$maestro:a11y-audit Audit WCAG compliance, ARIA usage, keyboard navigation, and screen reader compatibility` |
 | Qwen Code | `/maestro:a11y-audit Audit WCAG compliance, ARIA usage, keyboard navigation, and screen reader compatibility` |
+| opencode | `/a11y-audit Audit WCAG compliance, ARIA usage, keyboard navigation, and screen reader compatibility` |
 
 Expected outcome: Maestro audits WCAG compliance, ARIA usage, keyboard navigation, focus management, color contrast, and screen reader compatibility, then reports findings with WCAG criteria, severity, user impact, location, and remediation patterns.
 
@@ -189,6 +199,7 @@ Use this for crawlability, meta tags, canonical URLs, structured data, and Core 
 | Claude Code | `/seo-audit Audit meta tags, structured data, crawlability, and Core Web Vitals` |
 | Codex | `$maestro:seo-audit Audit meta tags, structured data, crawlability, and Core Web Vitals` |
 | Qwen Code | `/maestro:seo-audit Audit meta tags, structured data, crawlability, and Core Web Vitals` |
+| opencode | `/seo-audit Audit meta tags, structured data, crawlability, and Core Web Vitals` |
 
 Expected outcome: Maestro audits meta tags, schema markup, crawlability, canonicalization, internal linking, and Core Web Vitals, then reports findings with severity, SEO impact, location, and remediation guidance.
 
@@ -204,6 +215,7 @@ Use this for GDPR, CCPA, cookie consent, retention, licensing, and third-party d
 | Claude Code | `/compliance-check Review GDPR/CCPA, cookie consent, data handling, and licensing risk` |
 | Codex | `$maestro:compliance-check Review GDPR/CCPA, cookie consent, data handling, and licensing risk` |
 | Qwen Code | `/maestro:compliance-check Review GDPR/CCPA, cookie consent, data handling, and licensing risk` |
+| opencode | `/compliance-check Review GDPR/CCPA, cookie consent, data handling, and licensing risk` |
 
 Expected outcome: Maestro reviews data handling, disclosures, consent flows, retention policies, and third-party integrations, then reports findings with regulatory reference, severity, compliance risk, and recommended actions.
 

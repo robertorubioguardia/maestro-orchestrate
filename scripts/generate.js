@@ -15,7 +15,16 @@ const { buildPlatformMetadataOutputs } = require('../src/platforms/metadata');
 
 const ROOT = path.resolve(__dirname, '..');
 const SRC = path.join(ROOT, 'src');
-const OWNED_DIRS = ['agents', 'claude/agents', 'claude/skills', 'plugins/maestro/skills', 'commands'];
+const OWNED_DIRS = [
+  'agents',
+  'claude/agents',
+  'claude/skills',
+  'plugins/maestro/skills',
+  'commands',
+  'opencode/agents',
+  'opencode/commands',
+  'opencode/skills',
+];
 const ENTRY_POINT_EXPANDERS = [expandEntryPoints, expandCoreCommands];
 
 const args = process.argv.slice(2);
@@ -122,12 +131,15 @@ async function main() {
 
     const claudePayloadDir = path.join(ROOT, 'claude', 'src');
     const codexPayloadDir = path.join(ROOT, 'plugins', 'maestro', 'src');
+    const opencodePayloadDir = path.join(ROOT, 'opencode', 'src');
     const claudeStats = buildDetachedPayload(SRC, claudePayloadDir, 'claude');
     const codexStats = buildDetachedPayload(SRC, codexPayloadDir, 'codex');
-    stampVersion([claudePayloadDir, codexPayloadDir], packageMetadata.version);
+    const opencodeStats = buildDetachedPayload(SRC, opencodePayloadDir, 'opencode');
+    stampVersion([claudePayloadDir, codexPayloadDir, opencodePayloadDir], packageMetadata.version);
     console.log(
       `\nDetached payloads: claude/src (${claudeStats.copied} updated, ${claudeStats.removed} removed), ` +
-      `plugins/maestro/src (${codexStats.copied} updated, ${codexStats.removed} removed)`
+      `plugins/maestro/src (${codexStats.copied} updated, ${codexStats.removed} removed), ` +
+      `opencode/src (${opencodeStats.copied} updated, ${opencodeStats.removed} removed)`
     );
   }
 

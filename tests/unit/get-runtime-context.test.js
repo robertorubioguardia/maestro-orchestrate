@@ -26,6 +26,18 @@ describe('get_runtime_context response shape', () => {
     assert.equal(result.workspace_suggestion, null);
   });
 
+  it('opencode returns the maestro_ MCP prefix, kebab-case agents and no native plan mode', () => {
+    const handler = createHandler(require('../../src/platforms/opencode/runtime-config'), () => null);
+    const result = handler({});
+    assert.equal(result.runtime, 'opencode');
+    assert.equal(result.mcp_prefix, 'maestro_');
+    assert.equal(result.plan_mode_native, false);
+    assert.equal(result.agent_dispatch.naming, 'kebab-case');
+    assert.equal(result.agent_dispatch.prefix, '');
+    assert.ok(result.agents.includes('code-reviewer'));
+    assert.equal(result.tools.run_shell_command, 'bash');
+  });
+
   it('preserves the legacy agent_dispatch.pattern field', () => {
     const handler = createHandler(codex, () => null);
     const result = handler({});

@@ -26,6 +26,7 @@ assignees: ''
 - [ ] Claude Code
 - [ ] Codex
 - [ ] Qwen Code
+- [ ] opencode
 - [ ] All runtimes
 - [ ] Build/generator only
 

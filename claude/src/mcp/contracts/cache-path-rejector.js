@@ -6,6 +6,8 @@ const CACHE_PATH_SEGMENTS = [
   path.join('.codex', 'plugins'),
   path.join('.claude', 'plugins'),
   path.join('.gemini', 'extensions'),
+  path.join('.config', 'opencode'),
+  path.join('.opencode', 'maestro'),
 ];
 
 function segmentWindows(segments, size) {

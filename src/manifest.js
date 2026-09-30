@@ -1,11 +1,11 @@
 module.exports = [
-  // ── Agent discovery stubs — Gemini, Claude, and Qwen ───────────────
+  // ── Agent discovery stubs — Gemini, Claude, Qwen, and opencode ─────
   { glob: 'agents/*.md',
     transforms: ['parse-frontmatter', 'extract-examples', 'rebuild-frontmatter', 'agent-stub'],
-    runtimes: ['gemini', 'claude', 'qwen'] },
+    runtimes: ['gemini', 'claude', 'qwen', 'opencode'] },
 
-  // ── Shared skill discovery stubs — Claude + Codex only ─────────────
+  // ── Shared skill discovery stubs — Claude, Codex, and opencode ─────
   { glob: 'skills/shared/**/SKILL.md',
     transforms: ['skill-discovery-stub'],
-    runtimes: ['claude', 'codex'] },
+    runtimes: ['claude', 'codex', 'opencode'] },
 ];

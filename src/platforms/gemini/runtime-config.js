@@ -53,6 +53,7 @@ module.exports = {
     claudeStateContract: false,
     scriptBasedStateContract: true,
     codexStateContract: false,
+    opencodeStateContract: false,
   },
 
   paths: {

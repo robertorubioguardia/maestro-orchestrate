@@ -15,7 +15,19 @@ describe('cache-path-rejector', () => {
       path.join('.codex', 'plugins'),
       path.join('.claude', 'plugins'),
       path.join('.gemini', 'extensions'),
+      path.join('.config', 'opencode'),
+      path.join('.opencode', 'maestro'),
     ]);
+  });
+
+  it('rejects opencode global and project install paths', () => {
+    assert.equal(isExtensionCachePath('/Users/me/.config/opencode/maestro/src'), true);
+    assert.equal(isExtensionCachePath('/Users/me/proj/.opencode/maestro/src'), true);
+  });
+
+  it('allows other .opencode content and unrelated config dirs', () => {
+    assert.equal(isExtensionCachePath('/Users/me/proj/.opencode/agents'), false);
+    assert.equal(isExtensionCachePath('/Users/me/.config/other-tool'), false);
   });
 
   it('rejects Codex plugin cache paths', () => {

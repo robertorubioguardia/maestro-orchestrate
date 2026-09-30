@@ -25,7 +25,6 @@ const {
   resolveBasePath,
   resolveActiveSessionPath,
   parseSessionState,
-  serializeSessionState,
   extractBody,
   readActiveSession,
   readActiveSessionOrNull,
